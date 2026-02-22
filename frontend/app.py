@@ -14,21 +14,25 @@ st.markdown("""
 <style>
     /* Main background */
     .stApp {
-        background-color: #fafafa;
+        background-color: #131722;
+        color: #f6f6f6;
     }
     
     /* Input box styling */
     .stTextInput > div > div > input {
         border-radius: 12px;
-        border: 2px solid #e0e0e0;
+        border: 2px solid #2a2e39;
+        background-color: #1E222D;
+        color: #f6f6f6;
         padding: 15px 20px;
         font-size: 18px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         transition: all 0.3s ease;
     }
     .stTextInput > div > div > input:focus {
-        border-color: #4CAF50;
-        box-shadow: 0 6px 12px rgba(76, 175, 80, 0.2);
+        border-color: #6B73FF;
+        box-shadow: 0 0 15px rgba(107, 115, 255, 0.4);
+        background-color: #252a38;
     }
     
     /* Button styling */
@@ -43,22 +47,50 @@ st.markdown("""
         transition: all 0.3s ease;
         width: 100%;
         margin-top: 25px; /* Alignment with input box */
+        box-shadow: 0 4px 10px rgba(0, 13, 255, 0.2);
     }
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0, 13, 255, 0.3);
+        box-shadow: 0 8px 20px rgba(0, 13, 255, 0.5);
     }
     
-    /* Card aesthetics for Lean Canvas */
+    /* Card aesthetics for Lean Canvas (Expander) */
     div[data-testid="stExpander"] {
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        border: none;
-        margin-bottom: 10px;
+        background-color: #1E222D !important;
+        border-radius: 12px !important;
+        border: 1px solid #333947 !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+        margin-bottom: 10px !important;
+        transition: all 0.3s ease !important;
+    }
+    div[data-testid="stExpander"]:hover {
+        border-color: #6B73FF !important;
+        box-shadow: 0 0 15px rgba(107, 115, 255, 0.3) !important;
+    }
+    div[data-testid="stExpander"] details {
+        background-color: transparent !important;
+    }
+    div[data-testid="stExpander"] summary {
+        background-color: #1E222D !important;
+        color: #f6f6f6 !important;
+        border-radius: 12px !important;
+    }
+    div[data-testid="stExpander"] summary:hover {
+        background-color: #252a38 !important;
+    }
+    div[data-testid="stExpander"] summary p {
+        color: #f6f6f6 !important;
+        font-weight: bold !important;
+    }
+    div[data-testid="stExpander"] div[role="region"] {
+        background-color: #1E222D !important;
+        color: #d1d5db !important;
     }
     
-    /* Headers */
+    /* Headers & Text */
+    h1, h2, h3, h4, h5, h6, p, .stMarkdown, label {
+        color: #f6f6f6 !important;
+    }
     h1 {
         background: -webkit-linear-gradient(45deg, #ff007f, #7f00ff);
         -webkit-background-clip: text;
@@ -67,17 +99,42 @@ st.markdown("""
         text-align: center;
         margin-bottom: 10px;
     }
-    h2, h3 {
-        color: #333333;
+    .stMarkdown p {
+        color: #d1d5db !important;
     }
     
+    /* Tabs styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 20px;
+        background-color: transparent;
     }
     .stTabs [data-baseweb="tab"] {
         padding-top: 10px;
         padding-bottom: 10px;
         font-size: 18px;
+        color: #a0aabf;
+    }
+    .stTabs [data-baseweb="tab"][aria-selected="true"] {
+        color: #6B73FF;
+    }
+
+    /* Custom CSS Classes for dynamic output cards */
+    .output-card {
+        background-color: #1E222D;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #333947;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        color: #d1d5db;
+    }
+    .output-card:hover {
+        border-color: #6B73FF;
+        box-shadow: 0 0 15px rgba(107, 115, 255, 0.3);
+    }
+    .output-card h3 {
+        color: #f6f6f6 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -153,9 +210,9 @@ if submit_button and idea:
                     competitors = data.get("competitors", [])
                     for i, comp in enumerate(competitors):
                         st.markdown(f"""
-                        <div style='background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;'>
-                            <h3 style='margin-top: 0; color: #4CAF50;'>{i+1}. {comp.get('name', 'Unknown')}</h3>
-                            <p style='color: #555; font-size: 16px;'>{comp.get('description', '')}</p>
+                        <div class='output-card'>
+                            <h3 style='margin-top: 0; color: #4CAF50 !important;'>{i+1}. {comp.get('name', 'Unknown')}</h3>
+                            <p style='color: #d1d5db; font-size: 16px;'>{comp.get('description', '')}</p>
                         </div>
                         """, unsafe_allow_html=True)
                         
@@ -163,19 +220,15 @@ if submit_button and idea:
                     st.header("Pitch Deck Outline")
                     slides = data.get("pitch_deck", [])
                     for i, slide in enumerate(slides):
-                        with st.container():
-                            st.markdown(f"""
-                            <div style='border-left: 5px solid #6B73FF; padding-left: 20px; margin-bottom: 30px; background: white; padding: 20px; border-radius: 0 12px 12px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'>
-                                <h3 style='margin-top: 0; color: #1E1E1E;'>Slide {i+1}: {slide.get('title', 'Unknown Title')}</h3>
-                            </div>
-                            """, unsafe_allow_html=True)
-                            
-                            points = slide.get("points", [])
-                            for point in points:
-                                st.markdown(f"- {point}")
-                                
-                            if i < len(slides) - 1:
-                                st.markdown("<hr style='border: 1px solid #f0f0f0;'>", unsafe_allow_html=True)
+                        points_html = "".join([f"<li style='color: #d1d5db; margin-bottom: 8px;'>{point}</li>" for point in slide.get("points", [])])
+                        st.markdown(f"""
+                        <div class='output-card' style='border-left: 5px solid #6B73FF;'>
+                            <h3 style='margin-top: 0;'>Slide {i+1}: {slide.get('title', 'Unknown Title')}</h3>
+                            <ul style='padding-left: 20px;'>
+                                {points_html}
+                            </ul>
+                        </div>
+                        """, unsafe_allow_html=True)
                             
             else:
                 st.error(f"Error from server: {response.status_code}")
